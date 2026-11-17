@@ -1,60 +1,16 @@
-/*import 'package:flutter/material.dart';
-
-import '../model/product.dart';
-
-class DetailProductPage extends StatelessWidget {
-  final Product product;
-  const DetailProductPage({required this.product, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text(product.title)),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(child: Image.network(product.image, width: 200, height: 200)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(product.title),
-                Text(product.getPrice())
-              ]
-            ),
-            Text(product.description),
-            Text(product.category),
-            Spacer(flex:3),
-            Center(
-              child: ElevatedButton(
-                  onPressed: () => print('Bouton cliqué'),
-                  child: Text("Ajouter au panier")
-              ),
-            ),
-            Spacer(),
-          ]
-      ),
-    );
-    ;
-  }
-}
-*/
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/cart.dart';
 import '../model/product.dart';
 
-class DetailProductPage extends StatelessWidget {
+class DetailProductPage extends ConsumerWidget {
   final Product product;
 
   const DetailProductPage({required this.product, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -94,10 +50,30 @@ class DetailProductPage extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(product.category),
+            child: Row(
+              children: [
+                ...List.generate(5, (index) {
+                  return Icon(
+                    Icons.star,
+                    color: index < product.rating.round()
+                        ? Colors.amber
+                        : Colors.grey,
+                    size: 22,
+                  );
+                }),
+
+                const SizedBox(width: 8),
+                Text(
+                  "${product.rating}/5",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 8),
+                Text("(${product.ratingCount} avis)"),
+              ],
+            ),
           ),
           // TODO: Rajouter un chip si le produit est déjà dans le panier
-          if(context.watch<Cart>().products.contains(product))
+          if(ref.watch(cartProvider).contains(product))
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Chip(
@@ -112,7 +88,7 @@ class DetailProductPage extends StatelessWidget {
               child: FilledButton(
                 onPressed: () {
                   // TODO: Ajouter le produit au panier
-                  context.read<Cart>().add(product);
+                  ref.read(cartProvider.notifier).add(product);
                 },
                 child: Text("Ajouter au panier"),
               ),
@@ -123,3 +99,4 @@ class DetailProductPage extends StatelessWidget {
     );
   }
 }
+

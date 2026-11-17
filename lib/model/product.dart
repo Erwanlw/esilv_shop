@@ -1,49 +1,3 @@
-/*class Product {
-  final int id;
-  final String title;
-  final String description;
-  final num price;
-  final String image;
-  final String category;
-
-  Product({
-    required this.id,
-    required this.title,
-    required this.price,
-    required this.description,
-    required this.image,
-    required this.category,
-  });
-
-  String getPrice() {
-    return '${price.toStringAsFixed(2)}€';
-
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': this.id,
-      'title': this.title,
-      'description': this.description,
-      'price': this.price,
-      'image': this.image,
-      'category': this.category,
-    };
-  }
-
-  factory Product.fromMap(Map<String, dynamic> map) {
-    return Product(
-      id: map['id'] as int,
-      title: map['title'] as String,
-      description: map['description'] as String,
-      price: map['price'] as num,
-      image: map['image'] as String,
-      category: map['category'] as String,
-    );
-  }
-}
-*/
-
 class Product {
   final int id;
   final String title;
@@ -51,6 +5,8 @@ class Product {
   final String category;
   final String image;
   final num price;
+  final double rating;
+  final int ratingCount;
 
   //Constructeur avec les paramètres nommés "required"
   Product({
@@ -60,6 +16,8 @@ class Product {
     required this.price,
     required this.category,
     required this.description,
+    required this.rating,
+    required this.ratingCount,
   });
   String getPrice() => "${price.toStringAsFixed(2)}€";
 
@@ -71,10 +29,16 @@ class Product {
       'category': this.category,
       'image': this.image,
       'price': this.price,
+      'rating': {
+        'rate': rating,
+        'count': ratingCount,
+      },
     };
   }
 
   factory Product.fromMap(Map<String, dynamic> map) {
+    final ratingData = map['rating'] as Map<String, dynamic>? ?? {};
+
     return Product(
       id: map['id'] as int,
       title: map['title'] as String,
@@ -82,6 +46,8 @@ class Product {
       category: map['category'] as String,
       image: map['image'] as String,
       price: map['price'] as num,
+      rating: (ratingData['rate'] as num?)?.toDouble() ?? 0.0,
+      ratingCount: (ratingData['count'] as num?)?.toInt() ?? 0,
     );
   }
 }

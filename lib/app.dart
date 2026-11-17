@@ -1,85 +1,20 @@
-/*
-import 'dart:convert';
-
-import 'package:esilv_shop/page/detail_product_page.dart';
-import 'package:esilv_shop/page/list_product.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:http/http.dart';
-import 'model/product.dart';
-import 'page/cart_page.dart';
-
-class EsilvShop extends StatelessWidget {
-  const EsilvShop({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title : "Esilv Shop",
-      theme : ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      routerConfig: _router,
-      //home: ListProduct(),//DetailProductPage(),//CartPage(),
-    );
-  }
-}
-
-final _router = GoRouter(
-    routes: [
-      GoRoute(
-          path: 'product/',
-          builder: (context, state) => ListProduct(),
-      routes: [
-        GoRoute(
-            path: 'product/:idProduct',
-            builder: (context, state) {
-              final idProductNullable = int.tryParse(
-                state.pathParameters['idProduct'] ?? "",);
-              if (idProductNullable == null) {
-                return Scaffold(
-                    body: Center(child: Text("Produit introuvable")));
-              }
-
-
-              return DetailProductPage(product: products[idProductNullable]);
-            }
-            ),
-        GoRoute(path: '/', builder: (context, state) => CartPage()),
-      ]
-      )
-
-    ]
-);
-
-
-Future<Product> getProductById(int? idProductNullable) async{
-  final response = await get(Uri.parse('https://fakestoreapi.com/products/${idroductNullable!}'));
-  if (response.statusCode == 200) {
-    final Product product = Product.fromMap(
-        json.decode(response.body));
-  }
-  return Future.error("erreur")
-              }
-   */
-
 import 'dart:convert';
 
 import 'package:esilv_shop/page/cart_page.dart';
 import 'package:esilv_shop/page/detail_product_page.dart';
 import 'package:esilv_shop/page/list_product.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart';
 
 import 'model/product.dart';
 
-class EsilvShop extends StatelessWidget {
+class EsilvShop extends ConsumerWidget {
   const EsilvShop({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       title: 'Esilv Shop',
       theme: ThemeData(

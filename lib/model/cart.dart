@@ -1,18 +1,28 @@
 import 'package:esilv_shop/model/product.dart';
-import 'package:flutter/foundation.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+part 'cart.g.dart';
 
-class Cart extends ChangeNotifier {
-  final List<Product> _products = [];
-
-  List<Product> get products => _products;
+@riverpod
+class Cart extends _$Cart {
+  @override
+  List<Product> build() {
+    return [];
+  }
 
   void add(Product product){
-    _products.add(product);
-    notifyListeners();
+    state = [...state, product];
   }
 
   void remove(Product product){
-    _products.remove(product);
-    notifyListeners();
+    final newList = [...state];
+    newList.remove(product);
+    state = newList;
+    //state = state.where((element) => element.id != product.id).toList();
   }
+
+  String get priceInEuros =>
+      "${(state.fold<num>(0,(prv, actual) => prv + actual.price))
+          .toStringAsFixed(2)}€";
 }
+
+
